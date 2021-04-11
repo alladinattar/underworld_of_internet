@@ -1,5 +1,6 @@
 #include <boost/program_options.hpp>
-
+#include "htmlDownloader.hpp"
+#include "htmlParser.hpp"
 #include "boost/program_options.hpp"
 #include "iostream"
 namespace po = boost::program_options;
@@ -9,10 +10,10 @@ int main(int argc, char* argv[]){
   desc.add_options()
       ("help", "produce help message")
       ("url", po::value<std::string>(), "HTML page address")
-      ("depth",po::value<int>(), "page search depth")
+      /*("depth",po::value<int>(), "page search depth")
       ("network_threads", po::value<int>(), "number of threads to download pages")
       ("parser_threads", po::value<int>(),"number of threads to process pages")
-      ("output",po::value<std::string>(),"path to output file")
+      ("output",po::value<std::string>(),"path to output file")*/
       ;
 
   po::variables_map vm;
@@ -24,10 +25,11 @@ int main(int argc, char* argv[]){
     return 1;
   }
 
-  if (vm.count("compression")) {
-    std::cout << "Compression level was set to "
-         << vm["compression"].as<int>() << ".\n";
-  } else {
-    std::cout << "Compression level was not set.\n";
-  }
+
+
+  htmlDownloader downloader = htmlDownloader(vm["url"].as<std::string>());
+  std::string result = downloader.downloadPage(vm["url"].as<std::string>());
+  htmlParser parser = htmlParser(1, "");
+  parser.parsePage(result);
+  //std::cout<< result<<std::endl;
 }

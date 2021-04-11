@@ -30,15 +30,20 @@ string(APPEND CMAKE_CXX_FLAGS " -pthread")
 hunter_add_package(GTest)
 hunter_add_package(Boost COMPONENTS log thread system filesystem program_options )
 hunter_add_package(nlohmann_json)
+hunter_add_package(gumbo)
 
 find_package(GTest CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(Boost COMPONENTS log  log_setup thread system filesystem program_options )
 find_package(Threads)
+find_package(gumbo CONFIG REQUIRED)
 
 add_library(${PROJECT_NAME} STATIC
         # enum your files and delete this comment
-        include/header.hpp
+        include/htmlDownloader.hpp
+        sources/htmlDownloader.cpp
+        include/htmlParser.hpp
+        sources/htmlParser.cpp
         sources/source.cpp
         )
 target_link_libraries(${PROJECT_NAME} nlohmann_json::nlohmann_json
@@ -49,7 +54,8 @@ target_link_libraries(${PROJECT_NAME} nlohmann_json::nlohmann_json
         ${Boost_LOG_LIBRARY}
         ${Boost_FILESYSTEM_LIBRARY}
         ${Boost_THREAD_LIBRARY}
-        ${Boost_SYSTEM_LIBRARY} )
+        ${Boost_SYSTEM_LIBRARY}
+        gumbo::gumbo)
 
 add_executable(main
         ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
