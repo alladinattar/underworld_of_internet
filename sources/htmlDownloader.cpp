@@ -95,6 +95,7 @@ void htmlDownloader::startDownloadPages(std::vector<std::string> URLs, ThreadPoo
 
 
 void htmlDownloader::downloadPages(std::vector<url> URLs, int depth){
+  std::cout<<"hello";
   if (depth<0){return;}
   std::vector<std::string> htmlPages;
   for (auto & url : URLs) {
