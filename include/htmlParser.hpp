@@ -12,5 +12,6 @@ class htmlParser {
   htmlParser(ThreadPool& link) : downloaderPool(link){};
   static std::vector<std::string> collectIMG(std::vector<std::string> pages);
   static std::vector<std::string> collectLinks(std::vector<std::string> pages);
+  void startParse();
 };
 #endif  // INCLUDE_HTML_PARSER_HPP_

@@ -12,11 +12,10 @@ class htmlDownloader {
   std::vector<std::string> links;
   ThreadPool& parserPool;
   int depth_;
-  int stopPoint_;
-
  public:
-  htmlDownloader(ThreadPool& link, int depth, int stopPoint):parserPool(link), depth_(depth), stopPoint_(stopPoint){};
-  std::vector<std::string> downloadPages(std::vector<std::string> URLs);
+  htmlDownloader(ThreadPool& link, int depth/*, int stopPoint*/):parserPool(link), depth_(depth){};
+  std::vector<std::string> startDownloadPages(std::vector<std::string> URLs);
+  std::vector<std::string> downloadPages(std::vector<std::string> URLs, int& stopPoint);
 };
 
 #endif  // INCLUDE_HEADER_HPP_

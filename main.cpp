@@ -20,15 +20,10 @@ int main(int argc, char* argv[]) {
 
       ("output",po::value<std::string>(),"path to output file")*/
       ;
-
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, desc), vm);
   po::notify(vm);
 
-  if (vm.count("help")) {
-    std::cout << desc << "\n";
-    return 1;
-  }
   /*
 
 
@@ -41,25 +36,40 @@ int main(int argc, char* argv[]) {
   ThreadPool parserPool(vm["parser_threads"].as<int>());
   ThreadPool downloaderPool(vm["network_threads"].as<int>());
 
-  int stopPoint = 0;
+  //int stopPoint = 0;
 
+  if (vm["depth"].as<int>() == 0 ){
+
+  }
   htmlDownloader startDownloader =
-      htmlDownloader(parserPool, vm["depth"].as<int>(), stopPoint);
+      htmlDownloader(parserPool, vm["depth"].as<int>());
 
-  //std::vector<std::string> urls = {vm["url"].as<std::string>()};
+  std::vector<std::string> urls = {vm["url"].as<std::string>()};
 
+  htmlParser parser = htmlParser(downloaderPool);
+  std::vector<std::string> pages =
+      startDownloader.startDownloadPages({vm["url"].as<std::string>()});
 
-
+  std::vector<std::string> links = parser.collectLinks(pages);
+  for (auto k : links) {
+    std::cout << k;
+  }
   /*downloaderPool.enqueue([&](void) {
-    htmlDownloader downloader = htmlDownloader(parserPool, vm["depth"].as<int>(), stopPoint);
-    //std::vector<std::string> pages = downloader.downloadPages(urls);
-    parserPool.enqueue([&](void){
+    htmlDownloader downloader =
+        htmlDownloader(parserPool, vm["depth"].as<int>(), stopPoint);
+    std::vector<std::string> pages =
+        downloader.downloadPages({vm["url"].as<std::string>()}, parserPool  );
+    parserPool.enqueue([&](void) {
       htmlParser parser = htmlParser(downloaderPool);
-      //std::vector<std::string> links = parser.collectLinks(pages);
-      *//*for (auto k: links){
-        std::cout<<k;
-      }*//*
-
+      std::vector<std::string> links = parser.collectLinks(pages);
+      for (auto k : links) {
+        std::cout << k;
+      }
     });
   });*/
+
+  if (vm.count("help")) {
+    std::cout << desc << "\n";
+    return 1;
+  }
 }
