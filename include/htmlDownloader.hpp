@@ -11,8 +11,7 @@ class htmlDownloader {
  private:
 
  public:
-  std::vector<std::string> startDownloadPages(std::vector<std::string> URLs);
-  void downloadPages(std::vector<std::string> URLs, ThreadPool& parserPool,ThreadPool& downloaderPool);
+  void startDownloadPages(std::vector<std::string> URLs, ThreadPool& parserPool,ThreadPool& downloaderPool, ThreadPool& outputPool, std::string path);
 };
 
 #endif  // INCLUDE_HEADER_HPP_

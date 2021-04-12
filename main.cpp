@@ -15,10 +15,7 @@ int main(int argc, char* argv[]) {
       ("network_threads", po::value<int>(), "number of threads to download pages")
       ("parser_threads", po::value<int>(),"number of threads to process pages")
       ("depth",po::value<int>(), "page search depth")
-      /*
-
-
-      ("output",po::value<std::string>(),"path to output file")*/
+      ("output",po::value<std::string>(),"path to output file")
       ;
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -27,13 +24,10 @@ int main(int argc, char* argv[]) {
 
   ThreadPool downloadPool(1);
   ThreadPool parserPool(1);
+  ThreadPool outputPool(1);
 
-  htmlDownloader downloader = htmlDownloader(parserPool);
-  downloader.downloadPages({vm["url"].as<std::string>()}, parserPool);
-
-
-
-
+  htmlDownloader downloader = htmlDownloader();
+  downloader.startDownloadPages({vm["url"].as<std::string>()}, parserPool, downloadPool, outputPool, vm["output"].as<std::string>());
 
 
   if (vm.count("help")) {

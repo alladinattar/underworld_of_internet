@@ -12,7 +12,7 @@ namespace http = beast::http;
 namespace net = boost::asio;
 using tcp = net::ip::tcp;
 
-std::vector<std::string> htmlDownloader::startDownloadPages(std::vector<std::string> URLs) {
+/*std::vector<std::string> htmlDownloader::startDownloadPages(std::vector<std::string> URLs, ThreadPool& parserPool,ThreadPool& downloaderPool, ThreadPool& outputPool, std::string path) {
   std::vector<std::string> htmlPages;
   for (auto & url : URLs){
     net::io_context ioc;
@@ -44,7 +44,7 @@ std::vector<std::string> htmlDownloader::startDownloadPages(std::vector<std::str
   }
 
   return htmlPages;
-}
+}*/
 
 
 
@@ -53,7 +53,7 @@ std::vector<std::string> htmlDownloader::startDownloadPages(std::vector<std::str
 
 
 
-void htmlDownloader::downloadPages(std::vector<std::string> URLs, ThreadPool& parserPool, ThreadPool& downloaderPool) {
+void htmlDownloader::startDownloadPages(std::vector<std::string> URLs, ThreadPool& parserPool, ThreadPool& downloaderPool,ThreadPool& outputPool, std::string path) {
   std::vector<std::string> htmlPages;
   for (auto & url : URLs){
     net::io_context ioc;
@@ -82,9 +82,10 @@ void htmlDownloader::downloadPages(std::vector<std::string> URLs, ThreadPool& pa
     if (ec && ec != beast::errc::not_connected) throw beast::system_error{ec};
     htmlPages.push_back(res.body());
   }
+
   parserPool.enqueue([&](void){
     htmlParser parser = htmlParser();
-    parser.startParse(htmlPages,downloaderPool,parserPool);
+    parser.startParse(htmlPages, parserPool, downloaderPool, outputPool, path);
   });
 }
 
