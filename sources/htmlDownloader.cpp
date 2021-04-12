@@ -52,7 +52,7 @@ using tcp = net::ip::tcp;
 
 
 
-
+/*
 void htmlDownloader::startDownloadPages(std::vector<std::string> URLs, ThreadPool& parserPool, ThreadPool& downloaderPool,ThreadPool& outputPool, std::string path) {
   std::vector<std::string> htmlPages;
   for (auto & url : URLs){
@@ -85,15 +85,45 @@ void htmlDownloader::startDownloadPages(std::vector<std::string> URLs, ThreadPoo
 
   parserPool.enqueue([&](void){
     htmlParser parser = htmlParser();
-    parser.startParse(htmlPages, parserPool, downloaderPool, outputPool, path);
+    parser.startParse(htmlPages, downloaderPool,parserPool, outputPool, path);
   });
+}*/
+
+
+
+
+
+
+void htmlDownloader::downloadPages(std::vector<url> URLs, int depth){
+  if (depth<0){return;}
+  std::vector<std::string> htmlPages;
+  for (auto & url : URLs) {
+    net::io_context ioc;
+
+    tcp::resolver resolver(ioc);
+    beast::tcp_stream stream(ioc);
+    //std::cout<<url.uri<<" "<<url.domen<<std::endl;
+    auto const results = resolver.resolve(url.domen, "80");
+
+    stream.connect(results);
+    http::request<http::string_body> req{http::verb::get, url.uri, 10};
+    req.set(http::field::content_type, "text/plain");
+    req.set(http::field::host, "http-client-sync");
+
+    req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+    http::write(stream, req);
+    beast::flat_buffer buffer;
+    http::response<http::string_body> res;
+    http::read(stream, buffer, res);
+
+    // std::cout << res << std::endl;
+
+    beast::error_code ec;
+    stream.socket().shutdown(tcp::socket::shutdown_both, ec);
+
+    if (ec && ec != beast::errc::not_connected) throw beast::system_error{ec};
+    htmlPages.push_back(res.body());
+  }
+  this->parserObj_.collectIMG(htmlPages,*this,depth);
 }
-
-
-
-
-
-
-
-
 

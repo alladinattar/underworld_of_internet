@@ -20,7 +20,7 @@ static void search_for_images(GumboNode* node, std::vector<std::string> imgs) {
   }
 }
 
-static void search_for_links(GumboNode* node, std::vector<std::string> links) {
+static void search_for_links(GumboNode* node, std::vector<url>& links) {
   if (node->type != GUMBO_NODE_ELEMENT) {
     return;
   }
@@ -30,7 +30,28 @@ static void search_for_links(GumboNode* node, std::vector<std::string> links) {
       (std::string(
            gumbo_get_attribute(&node->v.element.attributes, "href")->value)
            .substr(0, 4) == "http")) {
-    links.push_back(href->value);
+    url urlLink = url();
+    std::string host = href->value;
+
+    if (host.find("http://") == 0)
+      host = host.substr(7);
+    size_t i = 0;
+    for (; i < host.size(); ++i) {
+      if ((host[i] == '/') || (host[i] == '?')) break;
+    }
+    urlLink.domen = host.substr(0, i);
+
+    std::string target = href->value;
+    //std::cout<<target<<std::endl;
+    if (target.find("http://") == 0){
+      target = target.substr(7);
+    }
+    int pos = target.find('/');
+    if (pos == -1)
+      urlLink.uri = "/";
+    urlLink.uri = target.substr(pos);
+    std::cout<<urlLink.domen<<"   "<<urlLink.uri<<std::endl;
+    links.push_back(urlLink);
   }
 
   GumboVector* children = &node->v.element.children;
@@ -39,17 +60,30 @@ static void search_for_links(GumboNode* node, std::vector<std::string> links) {
   }
 }
 
-std::vector<std::string> htmlParser::collectIMG(
-    std::vector<std::string> pages) {
+
+void htmlParser::collectIMG(
+    std::vector<std::string> pages, htmlDownloader& downloader , int& depth) {
   std::vector<std::string> imgs;
+  if (pages.empty()){
+    return;
+  }
   for (auto& page : pages) {
     GumboOutput* output = gumbo_parse(page.c_str());
     search_for_images(output->root, imgs);
     gumbo_destroy_output(&kGumboDefaultOptions, output);
   }
-  return imgs;
+  outputObj_.writeIMG(imgs);
+  std::vector<url> links;
+  for (auto& page : pages) {
+    GumboOutput* output = gumbo_parse(page.c_str());
+    search_for_links(output->root, links);
+    gumbo_destroy_output(&kGumboDefaultOptions, output);
+  }
+  for (auto i: links){std::cout<<i.uri<<std::endl;}
+  downloader.downloadPages(links, depth-1);
 }
 
+/*
 std::vector<std::string> htmlParser::collectLinks(
     std::vector<std::string> pages) {
   std::vector<std::string> links;
@@ -61,8 +95,9 @@ std::vector<std::string> htmlParser::collectLinks(
   return links;
 }
 
-void htmlParser::startParse(std::vector<std::string> pages, ThreadPool& downloaderPool, ThreadPool & parserPool, ThreadPool& outputPool, std::string path) {
+void htmlParser::startParse(std::vector<std::string>& pages, ThreadPool& downloaderPool, ThreadPool & parserPool, ThreadPool& outputPool, std::string path) {
   std::vector<std::string> links;
+
   for (auto& page : pages) {
     GumboOutput* output = gumbo_parse(page.c_str());
     search_for_links(output->root, links);
@@ -78,10 +113,10 @@ void htmlParser::startParse(std::vector<std::string> pages, ThreadPool& download
     htmlDownloader downloader = htmlDownloader();
     downloader.startDownloadPages(links, parserPool, downloaderPool, outputPool, path);
   });
-
+  std::cout<<"htlll";
   outputPool.enqueue([&](void){
     outPut output = outPut();
     output.writeFile(path, imgs);
   });
 
-}
+}*/

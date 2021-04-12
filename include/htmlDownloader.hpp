@@ -9,9 +9,13 @@
 #include "iostream"
 class htmlDownloader {
  private:
+  ThreadPool downloaderPool_;
+  htmlParser& parserObj_;
 
  public:
-  void startDownloadPages(std::vector<std::string> URLs, ThreadPool& parserPool,ThreadPool& downloaderPool, ThreadPool& outputPool, std::string path);
+  htmlDownloader(htmlParser& parserObj, int threadNum)
+      : downloaderPool_(threadNum),parserObj_(parserObj) {}
+  void downloadPages(std::vector<url> URLs, int depth);
 };
 
 #endif  // INCLUDE_HEADER_HPP_

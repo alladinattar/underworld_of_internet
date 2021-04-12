@@ -1,11 +1,19 @@
 #include "output.hpp"
 #include <iostream>
 #include <fstream>
-void outPut::writeFile(std::string path, std::vector<std::string> imgs) {
-  std::ofstream file(path);
+#include "ThreadPool.h"
+void outPut::writeFile(std::vector<std::string> imgs) {
+  std::ofstream file(path_);
   for (auto& img : imgs){
-    file<<img;
+    file<<img<<std::endl;
   }
   file.close();
 
+}
+
+
+void outPut::writeIMG(std::vector<std::string> imgs){
+  pool.enqueue([&](){
+    this->writeFile(imgs);
+  });
 }

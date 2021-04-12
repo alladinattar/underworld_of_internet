@@ -22,16 +22,18 @@ int main(int argc, char* argv[]) {
   po::notify(vm);
 
 
-  ThreadPool downloadPool(1);
-  ThreadPool parserPool(1);
-  ThreadPool outputPool(1);
-
-  htmlDownloader downloader = htmlDownloader();
-  downloader.startDownloadPages({vm["url"].as<std::string>()}, parserPool, downloadPool, outputPool, vm["output"].as<std::string>());
+  outPut output = outPut(vm["output"].as<std::string>());
+  htmlParser parser = htmlParser(output, vm["parser_threads"].as<int>());
+  htmlDownloader downloader = htmlDownloader(parser, vm["network_threads"].as<int>());
 
 
   if (vm.count("help")) {
     std::cout << desc << "\n";
     return 1;
   }
+  url url = {vm["url"].as<std::string>(), "/"};
+  downloader.downloadPages({url}, vm["depth"].as<int>());
+  int tmp;
+  std::cin >> tmp;
 }
+
