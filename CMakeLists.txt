@@ -45,6 +45,7 @@ add_library(${PROJECT_NAME} STATIC
         include/htmlParser.hpp
         sources/htmlParser.cpp
         sources/source.cpp
+        include/ThreadPool.h
         )
 target_link_libraries(${PROJECT_NAME} nlohmann_json::nlohmann_json
         ${Boost_BEAST_LIBRARY}
