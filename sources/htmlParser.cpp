@@ -59,3 +59,13 @@ std::vector<std::string> htmlParser::collectLinks(
   }
   return links;
 }
+
+void htmlParser::startParse(std::vector<std::string> pages, ThreadPool& downloaderPool, ThreadPool& parserPool) {
+  std::vector<std::string> links;
+  for (auto& page : pages) {
+    GumboOutput* output = gumbo_parse(page.c_str());
+    search_for_links(output->root, links);
+    gumbo_destroy_output(&kGumboDefaultOptions, output);
+  }
+
+}

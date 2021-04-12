@@ -6,6 +6,7 @@
 #include <boost/beast/version.hpp>
 #include "gumbo.h"
 #include "iostream"
+#include "htmlParser.hpp"
 namespace beast = boost::beast;
 namespace http = beast::http;
 namespace net = boost::asio;
@@ -52,9 +53,8 @@ std::vector<std::string> htmlDownloader::startDownloadPages(std::vector<std::str
 
 
 
-std::vector<std::string> htmlDownloader::downloadPages(std::vector<std::string> URLs, int& stopPoint) {
+void htmlDownloader::downloadPages(std::vector<std::string> URLs, ThreadPool& parserPool, ThreadPool& downloaderPool) {
   std::vector<std::string> htmlPages;
-  stopPoint+=1;
   for (auto & url : URLs){
     net::io_context ioc;
 
@@ -64,7 +64,6 @@ std::vector<std::string> htmlDownloader::downloadPages(std::vector<std::string> 
     auto const results = resolver.resolve(url, "80");
 
     stream.connect(results);
-    //int version = argc == 5 && !std::strcmp("1.0", argv[4]) ? 10 : 11;
     http::request<http::string_body> req{http::verb::get, "/", 10};
     req.set(http::field::content_type, "text/plain");
     req.set(http::field::host, "http-client-sync");
@@ -83,10 +82,10 @@ std::vector<std::string> htmlDownloader::downloadPages(std::vector<std::string> 
     if (ec && ec != beast::errc::not_connected) throw beast::system_error{ec};
     htmlPages.push_back(res.body());
   }
-  if (depth_==stopPoint) {
-
-  }
-  return htmlPages;
+  parserPool.enqueue([&](void){
+    htmlParser parser = htmlParser();
+    parser.startParse(htmlPages,downloaderPool,parserPool);
+  });
 }
 
 
