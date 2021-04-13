@@ -2,7 +2,7 @@
 
 #include "htmlParser.hpp"
 
-#include "gumbo.h"
+#include <gumbo.h>
 #include "htmlDownloader.hpp"
 #include "iostream"
 #include "output.hpp"
