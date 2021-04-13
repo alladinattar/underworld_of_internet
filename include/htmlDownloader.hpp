@@ -3,7 +3,7 @@
 #ifndef INCLUDE_HTMLDOWNLOADER_HPP_
 #define INCLUDE_HTMLDOWNLOADER_HPP_
 #include <boost/beast/http/message.hpp>
-
+#include "vector"
 #include "ThreadPool.h"
 #include "htmlParser.hpp"
 #include "iostream"

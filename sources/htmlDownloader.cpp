@@ -1,3 +1,4 @@
+//Copyright 2021 <rinamuka4@gmail.com>
 #include "htmlDownloader.hpp"
 
 #include <boost/asio/connect.hpp>
@@ -6,7 +7,6 @@
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>
 
-#include "gumbo.h"
 #include "htmlParser.hpp"
 #include "iostream"
 namespace beast = boost::beast;
