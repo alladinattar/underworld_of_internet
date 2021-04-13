@@ -1,5 +1,6 @@
-#ifndef INCLUDE_HTML_PARSER_HPP_
-#define INCLUDE_HTML_PARSER_HPP_
+//Copyright 2021 <rinamuka4@gmail.com>
+#ifndef INCLUDE_HTMLPARSER_HPP_
+#define INCLUDE_HTMLPARSER_HPP_
 #include "ThreadPool.h"
 #include "iostream"
 #include "output.hpp"
@@ -27,4 +28,4 @@ class htmlParser {
   downloaderPool, ThreadPool& parserPool, ThreadPool& outputPool, std::string
   path);*/
 };
-#endif  // INCLUDE_HTML_PARSER_HPP_
+#endif  // INCLUDE_HTMLPARSER_HPP_
