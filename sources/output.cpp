@@ -1,3 +1,5 @@
+//Copyright 2021 <rinamuka4@gmail.com>
+
 #include "output.hpp"
 
 #include <fstream>

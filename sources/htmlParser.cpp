@@ -1,3 +1,5 @@
+//Copyright 2021 <rinamuka4@gmail.com>
+
 #include "htmlParser.hpp"
 
 #include "gumbo.h"
@@ -57,8 +59,7 @@ static void search_for_links(GumboNode* node, std::vector<url>& links) {
       for (; i < host.size(); ++i) {
         if ((host[i] == '/') || (host[i] == '?')) break;
       }
-    } else
-      return;
+    } else return;
 
     urlLink.domen = host.substr(0, i);
 
