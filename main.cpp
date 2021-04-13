@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
     return 1;
   }
   url url = {vm["url"].as<std::string>(), "/"};
-  downloader.downloadPages({url}, vm["depth"].as<int>());
+  downloader.startDownload({url}, vm["depth"].as<int>());
   int tmp;
   std::cin >> tmp;
 }

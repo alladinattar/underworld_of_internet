@@ -5,7 +5,7 @@
 #include "iostream"
 #include "output.hpp"
 
-static void search_for_images(GumboNode* node, std::vector<std::string> imgs) {
+static void search_for_images(GumboNode* node, std::vector<std::string>& imgs) {
   if (node->type != GUMBO_NODE_ELEMENT) {
     return;
   }
@@ -96,7 +96,7 @@ static void search_for_links(GumboNode* node, std::vector<url>& links) {
 }
 
 void htmlParser::collectIMG(std::vector<std::string> pages,
-                            htmlDownloader& downloader, int& depth) {
+                            htmlDownloader& downloader, int depth) {
   std::vector<std::string> imgs;
   if (pages.empty()) {
     return;
@@ -106,6 +106,7 @@ void htmlParser::collectIMG(std::vector<std::string> pages,
     search_for_images(output->root, imgs);
     gumbo_destroy_output(&kGumboDefaultOptions, output);
   }
+  //for(auto k: imgs){std::cout<<k;}
   outputObj_.writeIMG(imgs);
   std::vector<url> links;
   for (auto& page : pages) {
@@ -117,7 +118,14 @@ void htmlParser::collectIMG(std::vector<std::string> pages,
     //std::cout << i.domen  << std::endl;
   }*/
 
-  downloader.downloadPages(links, depth - 1);
+  downloader.startDownload(links, depth - 1);
+}
+
+
+void htmlParser::startParse(std::vector<std::string> pages, htmlDownloader& downloader, int depth) {
+  parserPool_.enqueue([&](){
+    this->collectIMG(pages,downloader,depth);
+  });
 }
 
 /*

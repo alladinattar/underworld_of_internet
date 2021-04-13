@@ -92,7 +92,15 @@ void htmlDownloader::startDownloadPages(std::vector<std::string> URLs, ThreadPoo
 
 
 
+void htmlDownloader::startDownload(std::vector<url> URLs, int depth) {
+  std::cout<<"hello 1"<<std::endl;
 
+  downloaderPool_.enqueue([&](){
+    std::cout<<"hello 1.5"<<std::endl;
+    this->downloadPages(URLs,depth);
+  });
+
+}
 
 void htmlDownloader::downloadPages(std::vector<url> URLs, int depth){
   std::cout<<"depth = "<<depth<<std::endl;
@@ -106,7 +114,7 @@ void htmlDownloader::downloadPages(std::vector<url> URLs, int depth){
     beast::tcp_stream stream(ioc);
     //std::cout<<url.uri<<" "<<url.domen<<std::endl;
     auto const results = resolver.resolve(url.domen, "80");
-    std::cout<<"hello 1.5"<<std::endl;
+    //std::cout<<"hello 1.5"<<std::endl;
     std::cout<<url.domen<<url.uri<<std::endl;
     try{
       stream.connect(results);
@@ -115,7 +123,7 @@ void htmlDownloader::downloadPages(std::vector<url> URLs, int depth){
       continue;
     }
 
-    std::cout<<"hello 2"<<std::endl;
+    //std::cout<<"hello 2"<<std::endl;
 
     http::request<http::string_body> req{http::verb::get, url.uri, 10};
     req.set(http::field::content_type, "text/plain");
@@ -126,7 +134,7 @@ void htmlDownloader::downloadPages(std::vector<url> URLs, int depth){
     beast::flat_buffer buffer;
     http::response<http::string_body> res;
     http::read(stream, buffer, res);
-    std::cout<<"hello 3"<<std::endl;
+    //std::cout<<"hello 3"<<std::endl;
 
     // std::cout << res << std::endl;
 
@@ -135,8 +143,8 @@ void htmlDownloader::downloadPages(std::vector<url> URLs, int depth){
     if (ec && ec != beast::errc::not_connected) throw beast::system_error{ec} ;
     htmlPages.push_back(res.body());
   }
-  std::cout<<"hello 4"<<std::endl;
+  //std::cout<<"hello 4"<<std::endl;
 
-  this->parserObj_.collectIMG(htmlPages,*this,depth);
+  this->parserObj_.startParse(htmlPages,*this,depth);
 }
 
