@@ -4,6 +4,8 @@
 #include "ThreadPool.h"
 #include "iostream"
 #include "output.hpp"
+#include "string"
+#include "vectpr"
 
 class htmlDownloader;
 struct url {

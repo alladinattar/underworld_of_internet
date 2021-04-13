@@ -1,3 +1,4 @@
+//Copyright 2021 <rinamuka4@gmail.com>
 
 #ifndef INCLUDE_OUTPUT_HPP_
 #define INCLUDE_OUTPUT_HPP_
@@ -5,6 +6,7 @@
 #include "fstream"
 #include "iostream"
 #include "vector"
+#include "string"
 class outPut {
  private:
   std::string path_;
@@ -13,9 +15,9 @@ class outPut {
   void writeFile(std::vector<std::string> imgs);
 
  public:
-  outPut(std::string path) : path_(path), pool(1), file(path) {}
+  explicit outPut(std::string path) : path_(path), pool(1), file(path) {}
   void writeIMG(std::vector<std::string> imgs);
   ~outPut() { file.close(); }
 };
 
-#endif  // INCLUDE_HTML_PARSER_HPP_
+#endif  // INCLUDE_OUTPUT_HPP_
