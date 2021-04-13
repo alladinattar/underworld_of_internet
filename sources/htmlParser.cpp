@@ -55,14 +55,14 @@ static void search_for_links(GumboNode* node, std::vector<url>& links) {
     url urlLink = url();
     std::string host = href->value;
     if (host.find("http://") == 0) host = host.substr(7);
-    size_t i = 0;
+    size_t i(0);
     if (host.size() != 0) {
-      for (; i < host.size(); ++i) {
+      for (i = 0; i < host.size(); ++i) {
         if ((host[i] == '/') || (host[i] == '?')) break;
       }
-    } else
+    } else {
       return;
-
+    }
     urlLink.domen = host.substr(0, i);
 
     std::string target = href->value;
@@ -91,14 +91,14 @@ void htmlParser::collectIMG(std::vector<std::string> pages,
   if (pages.empty()) {
     return;
   }
-  for (auto& page : pages) {
+  for (const auto& page : pages) {
     GumboOutput* output = gumbo_parse(page.c_str());
     search_for_images(output->root, imgs);
     gumbo_destroy_output(&kGumboDefaultOptions, output);
   }
   outputObj_.writeIMG(imgs);
   std::vector<url> links;
-  for (auto& page : pages) {
+  for (const auto& page : pages) {
     GumboOutput* output = gumbo_parse(page.c_str());
     search_for_links(output->root, links);
     gumbo_destroy_output(&kGumboDefaultOptions, output);
