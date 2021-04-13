@@ -123,7 +123,7 @@ void htmlParser::collectIMG(std::vector<std::string> pages,
 
 
 void htmlParser::startParse(std::vector<std::string> pages, htmlDownloader& downloader, int depth) {
-  parserPool_.enqueue([&](){
+  parserPool_.enqueue([this, pages,depth,&downloader](){
     this->collectIMG(pages,downloader,depth);
   });
 }

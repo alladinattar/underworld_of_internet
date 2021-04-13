@@ -20,7 +20,7 @@ void outPut::writeFile(std::vector<std::string> imgs) {
 
 void outPut::writeIMG(std::vector<std::string> imgs){
 
-  pool.enqueue([&](){
+  pool.enqueue([imgs,this](){
 
     this->writeFile(imgs);
 

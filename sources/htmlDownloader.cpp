@@ -93,10 +93,8 @@ void htmlDownloader::startDownloadPages(std::vector<std::string> URLs, ThreadPoo
 
 
 void htmlDownloader::startDownload(std::vector<url> URLs, int depth) {
-  std::cout<<"hello 1"<<std::endl;
 
-  downloaderPool_.enqueue([&](){
-    std::cout<<"hello 1.5"<<std::endl;
+  downloaderPool_.enqueue([this, URLs, depth](){
     this->downloadPages(URLs,depth);
   });
 
@@ -105,6 +103,7 @@ void htmlDownloader::startDownload(std::vector<url> URLs, int depth) {
 void htmlDownloader::downloadPages(std::vector<url> URLs, int depth){
   std::cout<<"depth = "<<depth<<std::endl;
   if (depth<0){return;}
+  if(URLs.size()==0){std::cerr<<"Empty URLs"<<std::endl;}
   std::cout<<"hello 1"<<std::endl;
   std::vector<std::string> htmlPages;
   for (auto & url : URLs) {
