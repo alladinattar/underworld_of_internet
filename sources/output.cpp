@@ -3,6 +3,7 @@
 #include <fstream>
 #include "ThreadPool.h"
 void outPut::writeFile(std::vector<std::string> imgs) {
+  std::cout<<path_;
   std::ofstream file(path_);
   for (auto& img : imgs){
     file<<img<<std::endl;

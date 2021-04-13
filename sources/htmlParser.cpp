@@ -113,9 +113,9 @@ void htmlParser::collectIMG(std::vector<std::string> pages,
     search_for_links(output->root, links);
     gumbo_destroy_output(&kGumboDefaultOptions, output);
   }
-  for (auto i : links) {
-    std::cout << i.domen  << std::endl;
-  }
+  /*for (auto i : links) {
+    //std::cout << i.domen  << std::endl;
+  }*/
 
   downloader.downloadPages(links, depth - 1);
 }
